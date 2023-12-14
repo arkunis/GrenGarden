@@ -4,7 +4,7 @@ class db
 {
     private $host = "localhost";
     private $user = "root";
-    private $password = "";
+    private $password = "root";
     private $database = "greengarden";
     private $charset = "utf8";
 
@@ -146,6 +146,11 @@ class db
         $sql = "SELECT * FROM t_d_categorie WHERE Id_Categorie = :cat";
         return $this->getAloneParam($sql, $param);
     }
+    public function getFourUp($param = [])
+    {
+        $sql = "SELECT * FROM t_d_fournisseur WHERE Id_Fournisseur = :four";
+        return $this->getAloneParam($sql, $param);
+    }
     public function getProduct($param = [])
     {
         $sql = "SELECT * FROM t_d_produit where Id_Categorie = :id_cat";
@@ -238,8 +243,24 @@ class db
         $sql = $this->bdd->prepare($sql);
         $sql->execute($param);
     }
-    public function suppUser($param){
+    public function suppUser($param = []){
         $sql = "DELETE FROM t_d_client WHERE Id_Client = :client";
+        $sql = $this->bdd->prepare($sql);
+        $sql->execute($param);
+    }
+    public function suppProduct($param = []){
+        $sql = "DELETE FROM t_d_produit WHERE Id_Produit = :produit";
+        $sql = $this->bdd->prepare($sql);
+        $sql->execute($param);
+    }
+    //
+    public function updateClient($param = []){
+        $sql = "UPDATE t_d_client SET Nom_Societe_Client = :soc, Nom_Client = :nom, Prenom_Client = :prenom, Mail_Client = :mail, Tel_Client = :tel, DelaiPaiement_Client = :delai, Num_Client = :num where Id_Client = :idClient";
+        $sql = $this->bdd->prepare($sql);
+        $sql->execute($param);
+    }
+    public function updateProduit($param = []){
+        $sql = "UPDATE t_d_produit SET Taux_TVA = :tva, Nom_Long = :nomL, Nom_court = :nomC, Ref_fournisseur = :refs, Photo = :img, Prix_Achat = :prix, Id_Fournisseur = :fours, Id_Categorie = :cat where Id_Produit = :idProduit";
         $sql = $this->bdd->prepare($sql);
         $sql->execute($param);
     }
