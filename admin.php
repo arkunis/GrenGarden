@@ -28,10 +28,10 @@ if (isset($_POST['produit'])) {
     $four = htmlentities(stripcslashes($_POST['fournisseur']));
     $cat = htmlentities(stripcslashes($_POST['cat']));
 
-    $rFou = $db->getFour(["lib"=>$four]);
-    $rCat = $db->getCatProduit(["lib"=>$cat]);
+    $rFou = $db->getFour(["lib" => $four]);
+    $rCat = $db->getCatProduit(["lib" => $cat]);
 
-    $done = $db->insertProduit(["tva"=>$tva,"noml"=>$noml,"nomc"=>$nomc,"refs"=>$ref,"ph"=>$photo,"prix"=>$prix,"idFour"=>$rFou['Id_Fournisseur'],"idCat"=>$rCat['Id_Categorie']]);
+    $done = $db->insertProduit(["tva" => $tva, "noml" => $noml, "nomc" => $nomc, "refs" => $ref, "ph" => $photo, "prix" => $prix, "idFour" => $rFou['Id_Fournisseur'], "idCat" => $rCat['Id_Categorie']]);
 }
 
 ?>
@@ -313,10 +313,15 @@ if (isset($_POST['produit'])) {
                                             <th class="px-4 py-3">Mail</th>
                                             <th class="px-4 py-3">Type</th>
                                             <th class="px-4 py-3">Num. Client</th>
+                                            <th class="px-4 py-3">Modifier / SUpprimer</th>
                                         </tr>
                                     </thead>
                                     <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                                        <?php foreach ($users as $row) { ?>
+                                        <?php foreach ($users as $row) {
+                                            if(isset($_POST['supp_'.$row['Id_Client']])){
+                                                $db->suppUser(["client"=>$row['Id_Client']]);
+                                            }
+                                            ?>
                                             <tr class="bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 text-gray-700 dark:text-gray-400">
                                                 <td class="px-4 py-3">
                                                     <div class="flex items-center text-sm">
@@ -335,6 +340,14 @@ if (isset($_POST['produit'])) {
                                                     <span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"> <?= $row['Id_Type_Client']; ?> </span>
                                                 </td>
                                                 <td class="px-4 py-3 text-sm"><?= $row['Num_Client']; ?></td>
+                                                <td class="px-4 py-3 text-sm flex flex-row">
+                                                    <form method="post">
+                                                        <button type="submit" name="modif_<?= $row['Id_Client']; ?>" class="bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">Modifier</button>
+                                                    </form>
+                                                    <form method="post">
+                                                    <button type="submit" name="supp_<?= $row['Id_Client']; ?>" class="bg-red-100 text-red-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Supprimer</button>
+                                                    </form>
+                                                </td>
                                             </tr>
                                         <?php } ?>
                                     </tbody>

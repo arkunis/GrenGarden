@@ -194,7 +194,7 @@ class db
         $parPage = $nombre;
 
         // On calcule le nombre de pages total
-        return $pages = ceil($nbArticles / $parPage);
+        return ceil($nbArticles / $parPage);
     }
     public function getPremier($currentPage, $parPage)
     {
@@ -214,7 +214,7 @@ class db
         $query->execute();
 
         // On récupère les valeurs dans un tableau associatif
-       return $articles = $query->fetchAll(PDO::FETCH_ASSOC);
+       return $query->fetchAll(PDO::FETCH_ASSOC);
     }
     //
     public function forEarchFour(){
@@ -235,6 +235,11 @@ class db
     }
     public function insertProduit($param = []){
         $sql = "INSERT INTO t_d_produit (Taux_TVA, Nom_Long, Nom_court, Ref_fournisseur, Photo, Prix_Achat, Id_Fournisseur, Id_Categorie) VALUES (:tva, :noml, :nomc, :refs, :ph, :prix, :idFour, :idCat)";
+        $sql = $this->bdd->prepare($sql);
+        $sql->execute($param);
+    }
+    public function suppUser($param){
+        $sql = "DELETE FROM t_d_client WHERE Id_Client = :client";
         $sql = $this->bdd->prepare($sql);
         $sql->execute($param);
     }
