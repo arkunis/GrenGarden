@@ -138,8 +138,13 @@ class db
     //
     public function getCat()
     {
-        $sql = "SELECT * FROM t_d_categorie";
+        $sql = "SELECT * FROM t_d_categorie where Id_Categorie_Parent IS NULL";
         return $this->getResults($sql);
+    }
+    public function getCatNull($param = [])
+    {
+        $sql = "SELECT Id_Categorie FROM t_d_categorie where Id_Categorie_Parent = :id_cat";
+        return $this->getAll($sql, $param);
     }
     public function getCatNom($param = [])
     {
@@ -154,6 +159,11 @@ class db
     public function getProduct($param = [])
     {
         $sql = "SELECT * FROM t_d_produit where Id_Categorie = :id_cat";
+        return $this->getAll($sql, $param);
+    }
+    public function getSousCat($param = [])
+    {
+        $sql = "SELECT * FROM t_d_categorie where Id_Categorie_Parent = :id_cat";
         return $this->getAll($sql, $param);
     }
     public function getProductAll()

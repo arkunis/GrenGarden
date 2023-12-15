@@ -18,7 +18,7 @@ $db->connexion();
             <?php foreach ($db->getCat() as $row) { ?>
                 <article>
                     <div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                        <a href="product.php?categorie=<?= $row['Id_Categorie']; ?>" class="rounded-lg">
+                        <a href="product_sous.php?categorie=<?= $row['Id_Categorie']; ?>" class="rounded-lg">
                             <img class="rounded-lg p-8 w-full min-h-[400px] object-cover" src="<?= $row['img']; ?>" alt="categorie image" />
                         </a>
                         <div class="px-5 pb-5">
