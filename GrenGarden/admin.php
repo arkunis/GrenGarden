@@ -192,7 +192,7 @@ if (isset($_POST['produit'])) {
                     </div>
                     <!-- ./Statistics Cards -->
 
-                    <div class="grid grid-cols-1 lg:grid-cols-1 p-4 gap-4">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 p-4 gap-4">
 
                         <!-- Social Traffic -->
                         <div class="relative flex flex-col min-w-0 mb-4 lg:mb-0 break-words bg-gray-50 dark:bg-gray-800 w-full shadow-lg rounded">
@@ -229,19 +229,27 @@ if (isset($_POST['produit'])) {
                                                 }
                                                 $result_cat = $db->getCatNom(["cat" => $row['Id_Categorie']]);
                                                 $result_for = $db->getFourUp(["four" => $row['Id_Fournisseur']]);
+
+
                                                 if (isset($_POST['modifProduit_' . $row['Id_Produit']])) {
 
-                                                    $tva = htmlentities(stripcslashes($_POST['tva_'.$row['Id_Produit']]));
-                                                    $noml = htmlentities(stripcslashes($_POST['noml_'.$row['Id_Produit']]));
-                                                    $nomc = htmlentities(stripcslashes($_POST['nomc_'.$row['Id_Produit']]));
-                                                    $ref = htmlentities(stripcslashes($_POST['ref_'.$row['Id_Produit']]));
-                                                    $photo = htmlentities(stripcslashes($_POST['photo_'.$row['Id_Produit']]));
-                                                    $prix = htmlentities(stripcslashes($_POST['prix_'.$row['Id_Produit']]));
-                                                    $fours = htmlentities(stripcslashes($_POST['fournisseur_'.$row['Id_Produit']]));
-                                                    $cat_p = htmlentities(stripcslashes($_POST['cat_'.$row['Id_Produit']]));
-                                                    //Taux_TVA = :tva, Nom_Long = :nomL, Nom_court = :nomC, Ref_fournisseur = :refs, Photo = :img, Prix_Achat = :prix, Id_Fournisseur = :four, Id_Categorie = :cat where Id_Produit = :idProduit
+                                                    $tva = htmlentities(stripcslashes($_POST['tva_' . $row['Id_Produit']]));
+                                                    $noml = htmlentities(stripcslashes($_POST['noml_' . $row['Id_Produit']]));
+                                                    $nomc = htmlentities(stripcslashes($_POST['nomc_' . $row['Id_Produit']]));
+                                                    $ref = htmlentities(stripcslashes($_POST['ref_' . $row['Id_Produit']]));
+                                                    $photo = htmlentities(stripcslashes($_POST['photo_' . $row['Id_Produit']]));
+                                                    $prix = htmlentities(stripcslashes($_POST['prix_' . $row['Id_Produit']]));
+                                                    $fours = htmlentities(stripcslashes($_POST['fournisseur_' . $row['Id_Produit']]));
+                                                    $cat_p = htmlentities(stripcslashes($_POST['cat_' . $row['Id_Produit']]));
+                                                    $rFou = $db->getFour(["lib" => $fours]);
+                                                    $rCat = $db->getCatProduit(["lib" => $cat_p]);
+                                                    if (isset($rCat['Id_Categorie']) > 0) {
+                                                        $db->updateProduit(["tva" => $tva, "nomL" => $noml, "nomC" => $nomc, "refs" => $ref, "img" => $photo, "prix" => $prix, "fours" => $rFou['Id_Fournisseur'], "cat" => $rCat['Id_Categorie'], "idProduit" => $row['Id_Produit']]);
+                                                    } else {
+                                                        $db->addCat(["lib" => $cat_p, "img" => "https://d2gg9evh47fn9z.cloudfront.net/1600px_COLOURBOX9214366.jpg"]);
 
-                                                    $db->updateProduit(["tva"=>$tva, "nomL"=>$noml, "nomC"=>$nomc, "refs"=>$ref, "img"=>$photo, "prix"=>$prix, "fours"=>$result_for['Id_Fournisseur'], "cat"=>$result_cat['Id_Categorie'],"idProduit"=>$row['Id_Produit']]);
+                                                        $db->updateProduit(["tva" => $tva, "nomL" => $noml, "nomC" => $nomc, "refs" => $ref, "img" => $photo, "prix" => $prix, "fours" => $rFou['Id_Fournisseur'], "cat" => $db->getLastCat()['max(Id_Categorie)'], "idProduit" => $row['Id_Produit']]);
+                                                    }
                                                 }
                                             ?>
                                                 <tr class="text-gray-700 dark:text-gray-100">
@@ -282,21 +290,21 @@ if (isset($_POST['produit'])) {
                                                                     <div class="flex flex-col gap-5 md:flex-row">
                                                                         <input type="text" name="ref_<?= $row['Id_Produit']; ?>" placeholder="Référence" value="<?= $row['Ref_fournisseur']; ?>" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
 
-                                                                        <input type="text" name="photo_<?= $row['Id_Produit']; ?>" value="<?= $row['Photo']; ?>" placeholder="URL photo" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" >
+                                                                        <input type="text" name="photo_<?= $row['Id_Produit']; ?>" value="<?= $row['Photo']; ?>" placeholder="URL photo" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
                                                                     </div>
                                                                     <div class="flex justify-between gap-4">
                                                                         <select name="tva_<?= $row['Id_Produit']; ?>" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                                                             <!-- <option selected disabled value="<?= $row['Taux_TVA']; ?>"><?= $row['Taux_TVA']; ?></option>
                                                                          -->
-                                                                         <?php if($row['Taux_TVA'] == 19.60){?>
-                                                                            <option selected value="<?= $row['Taux_TVA']; ?>"><?= $row['Taux_TVA']; ?></option>
-                                                                            <option value="5.50">5.50</option>
-                                                                            <?php }else{ ?>
+                                                                            <?php if ($row['Taux_TVA'] == 19.60) { ?>
                                                                                 <option selected value="<?= $row['Taux_TVA']; ?>"><?= $row['Taux_TVA']; ?></option>
-                                                                            <option value="19.60">19.60</option>
-                                                                                <?php } ?>
+                                                                                <option value="5.50">5.50</option>
+                                                                            <?php } else { ?>
+                                                                                <option selected value="<?= $row['Taux_TVA']; ?>"><?= $row['Taux_TVA']; ?></option>
+                                                                                <option value="19.60">19.60</option>
+                                                                            <?php } ?>
                                                                         </select>
-                                                                        <input type="number" name="prix_<?= $row['Id_Produit']; ?>" value="<?= $row['Prix_Achat']; ?>" placeholder="Prix" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" >
+                                                                        <input type="number" name="prix_<?= $row['Id_Produit']; ?>" value="<?= $row['Prix_Achat']; ?>" placeholder="Prix" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
                                                                     </div>
                                                                     <div class="flex justify-between gap-5">
 
@@ -321,6 +329,46 @@ if (isset($_POST['produit'])) {
                                                         </div>
                                                     </div>
                                                 </div>
+                                            <?php } ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ./Social Traffic -->
+                                                <!-- Social Traffic -->
+                                                <div class="overflow-scroll h-96 relative flex flex-col min-w-0 mb-4 lg:mb-0 break-words bg-gray-50 dark:bg-gray-800 w-full shadow-lg rounded">
+                            <div class="rounded-t mb-0 px-0 border-0">
+                                <div class="flex flex-wrap items-center px-4 py-2">
+                                    <div class="relative w-full max-w-full flex-grow flex-1">
+                                        <h3 class="font-semibold text-base text-gray-900 dark:text-gray-50">Catégories</h3>
+                                    </div>
+                                    <div class="relative w-full max-w-full flex-grow flex-1 text-right">
+                                        <button data-modal-target="produit" data-modal-toggle="produit" class="bg-blue-500 dark:bg-gray-100 text-white active:bg-blue-600 dark:text-gray-800 dark:active:text-gray-700 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="btn">Ajouter un produit</button>
+                                    </div>
+                                </div>
+                                <div class="block w-full overflow-x-auto">
+                                    <table class="items-center w-full bg-transparent border-collapse">
+                                        <thead>
+                                            <tr>
+                                                <th class="px-4 bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-100 align-middle border border-solid border-gray-200 dark:border-gray-500 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">Catégorie</th>
+                                                <th class="px-4 bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-100 align-middle border border-solid border-gray-200 dark:border-gray-500 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">Supprimer</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($db->getCatAll() as $row) {   
+                                                if(isset($_POST['suppCat_'.$row['Id_Categorie']])){
+                                                    $db->suppCat(["cat_id"=>$row['Id_Categorie']]);
+                                                    $db->suppCatProduit(["cat_id"=>$row['Id_Categorie']]);
+                                                }
+                                                ?>
+                                                <tr class="text-gray-700 dark:text-gray-100">
+                                                    <th class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left"><?= $row['Libelle'] ?></th>
+                                                    <td class="flex flex-row border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                                                        <form method="post">
+                                                            <button type="submit" name="suppCat_<?= $row['Id_Categorie']; ?>" class="bg-red-100 text-red-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Supprimer</button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
                                             <?php } ?>
                                         </tbody>
                                     </table>

@@ -2,11 +2,18 @@
 
 class db
 {
-    private $host = "localhost";
+    private $host = "db";
     private $user = "root";
-    private $password = "root";
+    private $password = "";
     private $database = "greengarden";
     private $charset = "utf8";
+
+    // private $host = "localhost";
+    // private $user = "root";
+    // private $password = "root";
+    // private $database = "greengarden";
+    // private $charset = "utf8";
+
 
     private $bdd;
 
@@ -135,10 +142,21 @@ class db
 
         return $this->getAlone($sql);
     }
+    public function getLastCat()
+    {
+        $sql = "SELECT max(Id_Categorie) FROM t_d_categorie";
+
+        return $this->getAlone($sql);
+    }
     //
     public function getCat()
     {
         $sql = "SELECT * FROM t_d_categorie where Id_Categorie_Parent IS NULL";
+        return $this->getResults($sql);
+    }
+    public function getCatAll()
+    {
+        $sql = "SELECT * FROM t_d_categorie";
         return $this->getResults($sql);
     }
     public function getCatNull($param = [])
@@ -229,48 +247,73 @@ class db
         $query->execute();
 
         // On récupère les valeurs dans un tableau associatif
-       return $query->fetchAll(PDO::FETCH_ASSOC);
+        return $query->fetchAll(PDO::FETCH_ASSOC);
     }
     //
-    public function forEarchFour(){
-        $sql ="SELECT * FROM t_d_fournisseur";
+    public function forEarchFour()
+    {
+        $sql = "SELECT * FROM t_d_fournisseur";
         return $this->getResults($sql);
     }
-    public function forEarchCat(){
-        $sql ="SELECT * FROM t_d_categorie";
+    public function forEarchCat()
+    {
+        $sql = "SELECT * FROM t_d_categorie";
         return $this->getResults($sql);
     }
-    public function getCatProduit($param = []){
+    public function getCatProduit($param = [])
+    {
         $sql = "SELECT Id_Categorie FROM t_d_categorie WHERE Libelle = :lib";
         return $this->getAloneParam($sql, $param);
     }
-    public function getFour($param = []){
+    public function getFour($param = [])
+    {
         $sql = "SELECT Id_Fournisseur FROM t_d_fournisseur WHERE Nom_Fournisseur = :lib";
         return $this->getAloneParam($sql, $param);
     }
-    public function insertProduit($param = []){
+    public function insertProduit($param = [])
+    {
         $sql = "INSERT INTO t_d_produit (Taux_TVA, Nom_Long, Nom_court, Ref_fournisseur, Photo, Prix_Achat, Id_Fournisseur, Id_Categorie) VALUES (:tva, :noml, :nomc, :refs, :ph, :prix, :idFour, :idCat)";
         $sql = $this->bdd->prepare($sql);
         $sql->execute($param);
     }
-    public function suppUser($param = []){
+    public function suppUser($param = [])
+    {
         $sql = "DELETE FROM t_d_client WHERE Id_Client = :client";
         $sql = $this->bdd->prepare($sql);
         $sql->execute($param);
     }
-    public function suppProduct($param = []){
+    public function suppProduct($param = [])
+    {
         $sql = "DELETE FROM t_d_produit WHERE Id_Produit = :produit";
         $sql = $this->bdd->prepare($sql);
         $sql->execute($param);
     }
     //
-    public function updateClient($param = []){
+    public function updateClient($param = [])
+    {
         $sql = "UPDATE t_d_client SET Nom_Societe_Client = :soc, Nom_Client = :nom, Prenom_Client = :prenom, Mail_Client = :mail, Tel_Client = :tel, DelaiPaiement_Client = :delai, Num_Client = :num where Id_Client = :idClient";
         $sql = $this->bdd->prepare($sql);
         $sql->execute($param);
     }
-    public function updateProduit($param = []){
+    public function updateProduit($param = [])
+    {
         $sql = "UPDATE t_d_produit SET Taux_TVA = :tva, Nom_Long = :nomL, Nom_court = :nomC, Ref_fournisseur = :refs, Photo = :img, Prix_Achat = :prix, Id_Fournisseur = :fours, Id_Categorie = :cat where Id_Produit = :idProduit";
+        $sql = $this->bdd->prepare($sql);
+        $sql->execute($param);
+    }
+    //
+    public function addCat($param = []){
+        $sql = "INSERT INTO t_d_categorie (Libelle, img) VALUES (:lib, :img)";
+        $sql = $this->bdd->prepare($sql);
+        $sql->execute($param);
+    }
+    public function suppCat($param){
+        $sql = "DELETE FROM t_d_categorie WHERE Id_Categorie = :cat_id";
+        $sql = $this->bdd->prepare($sql);
+        $sql->execute($param);
+    }
+    public function suppCatProduit($param){
+        $sql = "DELETE FROM t_d_produit WHERE Id_Categorie = :cat_id";
         $sql = $this->bdd->prepare($sql);
         $sql->execute($param);
     }
