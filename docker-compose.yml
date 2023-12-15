@@ -3,6 +3,8 @@ version: "3.8"
 services:
   app:
     image: arkunis/greengarden
+    ports:
+      - "8081:80"
     depends_on:
       - db
 
