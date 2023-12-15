@@ -20,8 +20,8 @@ $users = $db->getPremier($currentPage, $nombre);
 if (isset($_POST['produit'])) {
 
     $tva = htmlentities(stripcslashes($_POST['tva']));
-    $noml = htmlentities(stripcslashes($_POST['nom']));
-    $nomc = htmlentities(stripcslashes($_POST['nom2']));
+    $nomc = htmlentities(stripcslashes($_POST['nom']));
+    $noml = htmlentities(stripcslashes($_POST['nom2']));
     $ref = htmlentities(stripcslashes($_POST['ref']));
     $photo = htmlentities(stripcslashes($_POST['photo']));
     $prix = htmlentities(stripcslashes($_POST['prix']));
@@ -263,7 +263,7 @@ if (isset($_POST['produit'])) {
                                                             <!-- Modal header -->
                                                             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                                                                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                                                                    Modification d'utilisateurs
+                                                                    Modification de produit
                                                                 </h3>
                                                                 <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="produit_<?= $row['Id_Produit']; ?>">
                                                                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
@@ -276,8 +276,8 @@ if (isset($_POST['produit'])) {
                                                             <div class="p-4 md:p-5 space-y-4">
                                                                 <form class="space-y-4" method="post">
                                                                     <div class="flex md:flex-row">
-                                                                        <input type="nom" name="noml_<?= $row['Id_Produit']; ?>" value="<?= $row['Nom_Long']; ?>" class=" mr-5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Nom long">
-                                                                        <input type="text" name="nomc_<?= $row['Id_Produit']; ?>" value="<?= $row['Nom_court']; ?>" placeholder="Nom court" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
+                                                                        <input type="text" name="nomc_<?= $row['Id_Produit']; ?>" value="<?= $row['Nom_court']; ?>" class=" mr-5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Nom court">
+                                                                        <input type="text" name="noml_<?= $row['Id_Produit']; ?>" value="<?= $row['Nom_Long']; ?>" placeholder="Description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
                                                                     </div>
                                                                     <div class="flex flex-col gap-5 md:flex-row">
                                                                         <input type="text" name="ref_<?= $row['Id_Produit']; ?>" placeholder="Référence" value="<?= $row['Ref_fournisseur']; ?>" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
@@ -492,7 +492,7 @@ if (isset($_POST['produit'])) {
                     <div class="p-4 md:p-5 space-y-4">
                         <form class="space-y-4" method="post">
                             <div>
-                                <input type="nom" name="nom" id="nom" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Nom long" required>
+                                <input type="nom" name="nom" id="nom" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Nom court" required>
                             </div>
                             <div>
                                 <input type="text" name="nom2" id="nom2" placeholder="Description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required>
