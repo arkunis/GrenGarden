@@ -2,17 +2,17 @@
 
 class db
 {
-    // private $host = "db";
-    // private $user = "root";
-    // private $password = "";
-    // private $database = "greengarden";
-    // private $charset = "utf8";
-
-    private $host = "localhost";
+    private $host = "db";
     private $user = "root";
-    private $password = "root";
+    private $password = "";
     private $database = "greengarden";
     private $charset = "utf8";
+
+    // private $host = "localhost";
+    // private $user = "root";
+    // private $password = "root";
+    // private $database = "greengarden";
+    // private $charset = "utf8";
 
 
     private $bdd;
@@ -189,6 +189,11 @@ class db
         $sql = "SELECT * FROM t_d_produit order by Id_Produit DESC";
         return $this->getResults($sql);
     }
+    public function getCommandeAll()
+    {
+        $sql = "SELECT * FROM t_d_commande order by Id_Commande DESC";
+        return $this->getResults($sql);
+    }
     public function getProductInfo($param = [])
     {
         $sql = "SELECT * FROM t_d_produit where Id_Produit = :id_produit";
@@ -206,12 +211,12 @@ class db
         $sql = "SELECT * FROM t_d_client";
         return $this->getResults($sql);
     }
-    public function getClients($param=[])
+    public function getClients($param = [])
     {
         $sql = "SELECT * FROM t_d_client where id_user = :log";
         return $this->getAloneParam($sql, $param);
     }
-    public function getAdresse($param=[])
+    public function getAdresse($param = [])
     {
         $sql = "SELECT * FROM t_d_adresse where Id_Client = :log";
         return $this->getAloneParam($sql, $param);
@@ -312,53 +317,75 @@ class db
         $sql->execute($param);
     }
     //
-    public function addCat($param = []){
+    public function addCat($param = [])
+    {
         $sql = "INSERT INTO t_d_categorie (Libelle, img) VALUES (:lib, :img)";
         $sql = $this->bdd->prepare($sql);
         $sql->execute($param);
     }
-    public function suppCat($param){
+    public function suppCat($param)
+    {
         $sql = "DELETE FROM t_d_categorie WHERE Id_Categorie = :cat_id";
         $sql = $this->bdd->prepare($sql);
         $sql->execute($param);
     }
-    public function suppCatProduit($param){
+    public function suppCatProduit($param)
+    {
         $sql = "DELETE FROM t_d_produit WHERE Id_Categorie = :cat_id";
         $sql = $this->bdd->prepare($sql);
         $sql->execute($param);
     }
-    public function getPaiement(){
+    public function suppCommande($param)
+    {
+        $sql = "DELETE FROM t_d_commande WHERE Id_Commande = :com_id";
+        $sql = $this->bdd->prepare($sql);
+        $sql->execute($param);
+    }
+    public function suppFacture($param)
+    {
+        $sql = "DELETE FROM t_d_facture WHERE Id_Facture = :fac_id";
+        $sql = $this->bdd->prepare($sql);
+        $sql->execute($param);
+    }
+    public function getPaiement()
+    {
         $sql = "SELECT * FROM t_d_type_paiement";
         return $this->getResults($sql);
     }
 
-    public function createCommand($param = []){
+    public function createCommand($param = [])
+    {
         $sql = "INSERT INTO t_d_commande (Id_Statut, Id_Client) VALUES (:stat, :client)";
         $sql = $this->bdd->prepare($sql);
         $sql->execute($param);
     }
     //
-    public function setAdresse($param = []){
+    public function setAdresse($param = [])
+    {
         $sql = "INSERT INTO t_d_adresse (Ligne1_Adresse, Ligne2_Adresse, CP_Adresse, Ville_Adresse, Id_Client) VALUES (:ad1, :ad2, :cp, :ville, :client)";
         $sql = $this->bdd->prepare($sql);
         $sql->execute($param);
     }
-    public function updateAdresse($param = []){
+    public function updateAdresse($param = [])
+    {
         $sql = "UPDATE t_d_adresse SET Ligne1_Adresse = :ad1, Ligne2_Adresse = :ad2, CP_Adresse = :cp, Ville_Adresse = :ville  where Id_Client = :client";
         $sql = $this->bdd->prepare($sql);
         $sql->execute($param);
     }
     //
-    public function addCommande($param = []){
+    public function addCommande($param = [])
+    {
         $sql = "INSERT INTO t_d_commande (Id_Statut, Id_Client, Id_TypePaiement, Date_Commande, Remise_Commande) VALUES (:ids, :idc, :types, :dates, :remise)";
         $sql = $this->bdd->prepare($sql);
         $sql->execute($param);
     }
-    public function getLastCommande(){
+    public function getLastCommande()
+    {
         $sql = "SELECT max(Id_Commande) FROM t_d_commande";
         return $this->getAlone($sql);
     }
-    public function addFacture($param = []){
+    public function addFacture($param = [])
+    {
         $sql = "UPDATE t_d_facture SET Date_Facture = :dates WHERE Id_Commande = :idC";
         $sql = $this->bdd->prepare($sql);
         $sql->execute($param);
@@ -367,5 +394,32 @@ class db
     {
         $sql = "SELECT * FROM t_d_type_paiement WHERE Libelle_TypePaiement = :lib";
         return $this->getAloneParam($sql, $param);
+    }
+    public function getNomPay($param = [])
+    {
+        $sql = "SELECT * FROM t_d_type_paiement WHERE Id_TypePaiement = :ids";
+        return $this->getAloneParam($sql, $param);
+    }
+    //
+    public function getClientId($param = [])
+    {
+        $sql = "SELECT * FROM t_d_client WHERE Id_Client = :ids";
+        return $this->getAloneParam($sql, $param);
+    }
+    public function getFacture($param = [])
+    {
+        $sql = "SELECT * FROM t_d_facture WHERE Id_Commande = :ids";
+        return $this->getAloneParam($sql, $param);
+    }
+    public function UpdateCommande($param = [])
+    {
+        $sql = "UPDATE t_d_commande SET Id_Statut = :stat WHERE Id_Commande = :idC";
+        $sql = $this->bdd->prepare($sql);
+        $sql->execute($param);
+    }
+    public function getStatutCommande()
+    {
+        $sql = "SELECT * FROM t_d_statut_commande";
+        return $this->getResults($sql);
     }
 }
