@@ -10,7 +10,7 @@ class db
 
     private $host = "localhost";
     private $user = "root";
-    private $password = "";
+    private $password = "root";
     private $database = "greengarden";
     private $charset = "utf8";
 
@@ -350,7 +350,7 @@ class db
     }
     //
     public function addCommande($param = []){
-        $sql = "INSERT INTO t_d_commande (Id_Statut, Id_Client, Id_TypePaiement) VALUES (:ids, :idc, :types)";
+        $sql = "INSERT INTO t_d_commande (Id_Statut, Id_Client, Id_TypePaiement, Date_Commande, Remise_Commande) VALUES (:ids, :idc, :types, :dates, :remise)";
         $sql = $this->bdd->prepare($sql);
         $sql->execute($param);
     }
@@ -359,7 +359,7 @@ class db
         return $this->getAlone($sql);
     }
     public function addFacture($param = []){
-        $sql = "INSERT INTO t_d_facture (Id_Commande) VALUES (:id)";
+        $sql = "UPDATE t_d_facture SET Date_Facture = :dates WHERE Id_Commande = :idC";
         $sql = $this->bdd->prepare($sql);
         $sql->execute($param);
     }

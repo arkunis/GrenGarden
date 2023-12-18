@@ -15,32 +15,31 @@ if (isset($_SESSION['login']) == true) {
 }
 
 if (isset($_POST['pay_btn'])) {
-
+    $today = date("Y-m-d H:i:s"); 
     if ($add > 0) {
-
         $ad1 = htmlentities(stripcslashes($_POST['adresse']));
         $ad2 = htmlentities(stripcslashes($_POST['adresse1']));
         $postal = htmlentities(stripcslashes($_POST['postal']));
         $ville = htmlentities(stripcslashes($_POST['ville']));
         $paiement = htmlentities(stripcslashes($_POST['paiements']));
-        $getIDPay = $db->getIdPay(["lib"=>$_POST['paiements']]);
-        var_dump($getIDPay);
-        $db->updateAdresse(["ad1" => $ad1, "ad2" => $ad2, "cp" => $postal, "ville" => $ville, "client" => $client['Id_User']]);
-        $db->addCommande(["ids" => 1, "idc" => $client['Id_User'], "types" => $getIDPay['Id_TypePaiement']]);
+        $getIDPay = $db->getIdPay(["lib" => $_POST['paiements']]);
+        $db->updateAdresse(["ad1" => $ad1, "ad2" => $ad2, "cp" => $postal, "ville" => $ville, "client" => $result['Id_Client']]);
+        $db->addCommande(["ids" => 1, "idc" => $result['Id_Client'], "types" => $getIDPay['Id_TypePaiement'], "dates"=>$today, "remise"=>0.00]);
         $lastCom =  $db->getLastCommande();
-        $db->addFacture(["id"=>$lastCom]);
+        $db->addFacture(["dates"=>$today, "idC"=>$lastCom['max(Id_Commande)']]);
+        unset($_SESSION['panier']);
     } else {
         $ad1 = htmlentities(stripcslashes($_POST['adresse']));
         $ad2 = htmlentities(stripcslashes($_POST['adresse1']));
         $postal = htmlentities(stripcslashes($_POST['postal']));
         $ville = htmlentities(stripcslashes($_POST['ville']));
         $paiement = htmlentities(stripcslashes($_POST['paiements']));
-        $getIDPay = $db->getIdPay(["lib"=>$_POST['paiements']]);
-        var_dump($getIDPay);
-        $db->setAdresse(["ad1" => $ad1, "ad2" => $ad2, "cp" => $postal, "ville" => $ville, "client" => $client['Id_User']]);
-        $db->addCommande(["ids" => 1, "idc" => $client['Id_User'], "types" => $getIDPay['Id_TypePaiement']]);
+        $getIDPay = $db->getIdPay(["lib" => $_POST['paiements']]);
+        $db->setAdresse(["ad1" => $ad1, "ad2" => $ad2, "cp" => $postal, "ville" => $ville, "client" => $result['Id_Client']]);
+        $db->addCommande(["ids" => 1, "idc" => $result['Id_Client'], "types" => $getIDPay['Id_TypePaiement'], "dates"=>$today, "remise"=>0.00]);
         $lastCom =  $db->getLastCommande();
-        $db->addFacture(["id"=>$lastCom]);
+        $db->addFacture(["dates"=>$today, "idC"=>$lastCom['max(Id_Commande)']]);
+        unset($_SESSION['panier']);
     }
 }
 
@@ -98,7 +97,7 @@ $total = [];
 
             </article>
             <article class="w-full">
-                <?php if (isset($_SESSION['login']) == true) { ?>
+                <?php if (isset($_SESSION['login']) == true && isset($_SESSION['panier']) != "") { ?>
 
                     <form method="post">
                         <div class="relative z-0 w-full mb-5 group">
@@ -127,7 +126,7 @@ $total = [];
                             <div class="relative z-0 w-full mb-5 group">
                                 <input type="text" name="adresse1" value="<?php if ($add > 0) {
                                                                                 print $add['Ligne2_Adresse'];
-                                                                            }; ?>" id="adresse1" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+                                                                            }; ?>" id="adresse1" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                                 <label for="adresse1" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Complément d'adresse</label>
                             </div>
                         </div>
@@ -168,7 +167,11 @@ $total = [];
 
                 <?php } else { ?>
 
+                    <?php if(isset($_SESSION['login'])==false ){ ?>
                     <p class="text-xl">Veuillez vous connecter pour finaliser votre commande !</p>
+                    <?php }else{ ?>
+                        <p class="text-xl">Votre panier est vide !</p>
+                        <?php } ?>
 
                 <?php } ?>
             </article>

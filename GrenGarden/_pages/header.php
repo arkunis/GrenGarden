@@ -32,22 +32,25 @@
                         <li>
                             <a href="panier.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Mon panier</a>
                         </li>
-                        <li> <?php if (isset($_SESSION['panier']) == true) {
-                            if(isset($_POST['paniervide'])){
-                                unset( $_SESSION['panier']);
+                        <?php if (isset($_SESSION['panier']) === true) {
+                            if (isset($_POST['paniervide'])) {
+                                unset($_SESSION['panier']);
                             }
-                                    foreach ($_SESSION['panier'] as $row) {
-                                        $produit = $db->getProductInfo(["id_produit" => $row[0]]);
-                                ?>
+                            foreach ($_SESSION['panier'] as $row) {
+                                $produit = $db->getProductInfo(["id_produit" => $row[0]]);
+                        ?>
+                                <li>
                                     <span class="block text-sm text-gray-500 truncate dark:text-white m-2"><?= $produit['Nom_court']; ?> : <?= $row[1]; ?></span>
+                                </li>
+                            <?php   } ?>
 
-                                <?php   } ?>
-                                <form method="post">
-                                    <button type="sumbit" name="paniervide" class="m-2.5 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">Vider le panier</button>
-                                </form>
-                                <?php } ?>
+                            <form method="post">
+                                <button type="sumbit" name="paniervide" class="m-2.5 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">Vider le panier</button>
+                            </form>
 
-                        </li>
+                        <?php } ?>
+
+
                         <?php if (isset($_SESSION['login']) == true) { ?>
                             <li>
                                 <a href="_pages/deco.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</a>
