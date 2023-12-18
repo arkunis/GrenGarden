@@ -35,10 +35,6 @@
                         <?php if (isset($_SESSION['panier']) === true) {
                             if (isset($_POST['paniervide'])) {
                                 unset($_SESSION['panier']);
-                                $url = $_SERVER['REQUEST_URI'];
-                                header("Location:$url");
-                                header_remove("Location");
-                                exit;
                             }
                             foreach ($_SESSION['panier'] as $row) {
                                 $produit = $db->getProductInfo(["id_produit" => $row[0]]);
