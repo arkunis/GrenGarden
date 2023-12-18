@@ -5,6 +5,20 @@ $db = new db();
 $db->connexion();
 
 $result = $db->getProductInfo(["id_produit" => $_GET['product']]);
+
+if (isset($_POST['panier_' . $result['Id_Produit']])) {
+
+    // Ajout du produit au panier
+    if (!isset($_SESSION['panier'])) {
+        $_SESSION['panier'] = array(); // Initialisation du panier s'il est vide
+    }
+    $id_produit = $result['Id_Produit'];
+    if (isset($_SESSION['panier'][$id_produit])) {
+        $_SESSION['panier'][$id_produit][1] = $_POST['quantite']; // Incrémentation de la quantité si le produit est déjà présent dans le panier
+    } else {
+        $_SESSION['panier'][$id_produit] = [$id_produit, $_POST['quantite']]; // Ajout du produit avec une quantité de 1 si le produit n'est pas déjà présent dans le panier
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -44,7 +58,7 @@ $result = $db->getProductInfo(["id_produit" => $_GET['product']]);
                                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16" />
                                                 </svg>
                                             </button>
-                                            <input type="text" id="quantity-input" data-input-counter data-input-counter-min="1" data-input-counter-max="50" aria-describedby="helper-text-explanation" class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="999" value="1" required>
+                                            <input type="text" id="quantity-input" name="quantite" data-input-counter data-input-counter-min="1" data-input-counter-max="50" aria-describedby="helper-text-explanation" class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="999" value="1" required>
                                             <button type="button" id="increment-button" data-input-counter-increment="quantity-input" class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-e-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
                                                 <svg class="w-2 h-2 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
                                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
@@ -53,7 +67,7 @@ $result = $db->getProductInfo(["id_produit" => $_GET['product']]);
                                         </div>
                                     </div>
                                     
-                                        <button type="sumbit" name="panier" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Ajouter au panier</button>
+                                        <button type="sumbit" name="panier_<?= $result['Id_Produit']; ?>" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Ajouter au panier</button>
                  
                                 </div>
                             </a>

@@ -1,9 +1,9 @@
 <?php
 session_start();
+ob_start();
 require_once('php/config/config.php');
 $db = new db();
 $db->connexion();
-
 
 ?>
 <!DOCTYPE html>
@@ -15,7 +15,22 @@ $db->connexion();
     <?php include('_pages/header.php'); ?>
     <main class="min-h-[56vh] mb-5">
         <section class="w-[70%] mx-auto flex flex-row flex-wrap gap-5 justify-center">
-            <?php foreach ($db->getProduct(["id_cat" => $_GET['categorie']]) as $row) { ?>
+            <?php foreach ($db->getProduct(["id_cat" => $_GET['categorie']]) as $row) {
+
+                if (isset($_POST['buy_' . $row['Id_Produit']])) {
+
+                    // Ajout du produit au panier
+                    if (!isset($_SESSION['panier'])) {
+                        $_SESSION['panier'] = array(); // Initialisation du panier s'il est vide
+                    }
+                    $id_produit = $row['Id_Produit'];
+                    if (isset($_SESSION['panier'][$id_produit])) {
+                        $_SESSION['panier'][$id_produit][1]++; // Incrémentation de la quantité si le produit est déjà présent dans le panier
+                    } else {
+                        $_SESSION['panier'][$id_produit] = [$id_produit, 1]; // Ajout du produit avec une quantité de 1 si le produit n'est pas déjà présent dans le panier
+                    }
+                }
+            ?>
                 <article>
                     <div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                         <a href="product_info.php?product=<?= $row['Id_Produit']; ?>" class="rounded-lg">
@@ -49,16 +64,18 @@ $db->connexion();
                                     <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ms-3">5.0</span>
                                 </div>
                             </div>
+                            <form method="post">
+                                <button type="sumbit" name="buy_<?= $row['Id_Produit']; ?>" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                    <svg class="w-3.5 h-3.5 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 21">
+                                        <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z" />
+                                    </svg>
+                                    Buy now
+                                </button>
 
-                            <button type="button" name="buy_<?= $row['Id_Produit']; ?>" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                <svg class="w-3.5 h-3.5 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 21">
-                                    <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z" />
-                                </svg>
-                                Buy now
-                            </button>
-                            <a href="product_info.php?product=<?= $row['Id_Produit']; ?>" class="inline-flex justify-center hover:text-gray-900 items-center py-2.5 px-5 sm:ms-4 text-base font-medium text-sm text-center text-white rounded-lg border border-white hover:bg-gray-100 focus:ring-4 focus:ring-gray-400">
-                                Learn more
-                            </a>
+                                <a href="product_info.php?product=<?= $row['Id_Produit']; ?>" class="inline-flex justify-center hover:text-gray-900 items-center py-2.5 px-5 sm:ms-4 text-base font-medium text-sm text-center text-white rounded-lg border border-white hover:bg-gray-100 focus:ring-4 focus:ring-gray-400">
+                                    Learn more
+                                </a>
+                            </form>
                         </div>
                     </div>
                 </article>

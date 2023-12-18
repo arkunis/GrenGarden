@@ -2,17 +2,17 @@
 
 class db
 {
-    private $host = "db";
+    // private $host = "db";
+    // private $user = "root";
+    // private $password = "";
+    // private $database = "greengarden";
+    // private $charset = "utf8";
+
+    private $host = "localhost";
     private $user = "root";
     private $password = "";
     private $database = "greengarden";
     private $charset = "utf8";
-
-    // private $host = "localhost";
-    // private $user = "root";
-    // private $password = "root";
-    // private $database = "greengarden";
-    // private $charset = "utf8";
 
 
     private $bdd;
@@ -206,6 +206,16 @@ class db
         $sql = "SELECT * FROM t_d_client";
         return $this->getResults($sql);
     }
+    public function getClients($param=[])
+    {
+        $sql = "SELECT * FROM t_d_client where id_user = :log";
+        return $this->getAloneParam($sql, $param);
+    }
+    public function getAdresse($param=[])
+    {
+        $sql = "SELECT * FROM t_d_adresse where Id_Client = :log";
+        return $this->getAloneParam($sql, $param);
+    }
     // 
     public function getPage($nombre)
     {
@@ -316,5 +326,46 @@ class db
         $sql = "DELETE FROM t_d_produit WHERE Id_Categorie = :cat_id";
         $sql = $this->bdd->prepare($sql);
         $sql->execute($param);
+    }
+    public function getPaiement(){
+        $sql = "SELECT * FROM t_d_type_paiement";
+        return $this->getResults($sql);
+    }
+
+    public function createCommand($param = []){
+        $sql = "INSERT INTO t_d_commande (Id_Statut, Id_Client) VALUES (:stat, :client)";
+        $sql = $this->bdd->prepare($sql);
+        $sql->execute($param);
+    }
+    //
+    public function setAdresse($param = []){
+        $sql = "INSERT INTO t_d_adresse (Ligne1_Adresse, Ligne2_Adresse, CP_Adresse, Ville_Adresse, Id_Client) VALUES (:ad1, :ad2, :cp, :ville, :client)";
+        $sql = $this->bdd->prepare($sql);
+        $sql->execute($param);
+    }
+    public function updateAdresse($param = []){
+        $sql = "UPDATE t_d_adresse SET Ligne1_Adresse = :ad1, Ligne2_Adresse = :ad2, CP_Adresse = :cp, Ville_Adresse = :ville  where Id_Client = :client";
+        $sql = $this->bdd->prepare($sql);
+        $sql->execute($param);
+    }
+    //
+    public function addCommande($param = []){
+        $sql = "INSERT INTO t_d_commande (Id_Statut, Id_Client, Id_TypePaiement) VALUES (:ids, :idc, :types)";
+        $sql = $this->bdd->prepare($sql);
+        $sql->execute($param);
+    }
+    public function getLastCommande(){
+        $sql = "SELECT max(Id_Commande) FROM t_d_commande";
+        return $this->getAlone($sql);
+    }
+    public function addFacture($param = []){
+        $sql = "INSERT INTO t_d_facture (Id_Commande) VALUES (:id)";
+        $sql = $this->bdd->prepare($sql);
+        $sql->execute($param);
+    }
+    public function getIdPay($param = [])
+    {
+        $sql = "SELECT * FROM t_d_type_paiement WHERE Libelle_TypePaiement = :lib";
+        return $this->getAloneParam($sql, $param);
     }
 }
